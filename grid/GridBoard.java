@@ -21,7 +21,7 @@ public class GridBoard {
 	}
 
 	private boolean checkForWin(int row, int column, Player player) {
-		ConnectFourButton currButton = Board.buttonBoard[row][column];
+		ConnectFourButton currButton = Board._buttonBoard[row][column];
 		
 		if (rowCheck(currButton) || downTurtle(currButton) || nwseDiag(currButton) || nesw(currButton)) {
 			return true;
@@ -32,8 +32,14 @@ public class GridBoard {
 
 	private boolean rowCheck(ConnectFourButton currButton) {
 		int counter = 0;
-		for (int i=0; i<Board.COLUMNS; i++) {
-			ConnectFourButton newButton = Board.buttonBoard[currButton.getRow()][i];
+		int start = currButton.getColumn()-4;
+		start = start<0 ? 0 : start; //Ensure it is not less than zero
+		
+		int end = currButton.getColumn()+4;
+		end = end>=Board.COLUMNS ? Board.COLUMNS-1 : end; //Ensure it is not greater than the number of columns
+
+		for (int i=start; i<end; i++) {
+			ConnectFourButton newButton = Board._buttonBoard[currButton.getRow()][i];
 			
 			if (currButton.getPlayer().equals(newButton.getPlayer())) {
 				counter++;
@@ -56,7 +62,7 @@ public class GridBoard {
 		}
 		
 		for (int i=0; i<Board.ROWS; i++) {
-			ConnectFourButton newButton = Board.buttonBoard[i][currButton.getColumn()];
+			ConnectFourButton newButton = Board._buttonBoard[i][currButton.getColumn()];
 			
 			if (currButton.getPlayer().equals(newButton.getPlayer())) {
 				counter++;
@@ -90,7 +96,7 @@ public class GridBoard {
 		}
 		
 		for (int i=0; i<Board.COLUMNS && row<Board.ROWS; i++) {
-			ConnectFourButton newButton = Board.buttonBoard[row][i];
+			ConnectFourButton newButton = Board._buttonBoard[row][i];
 			
 			if (currButton.getPlayer().equals(newButton.getPlayer())) {
 				counter++;
@@ -125,7 +131,7 @@ public class GridBoard {
 		}
 
 		for (int i=Board.COLUMNS-1; i>=0 && row<Board.ROWS; i--) {
-			ConnectFourButton newButton = Board.buttonBoard[row][i];
+			ConnectFourButton newButton = Board._buttonBoard[row][i];
 			
 			if (currButton.getPlayer().equals(newButton.getPlayer())) {
 				counter++;

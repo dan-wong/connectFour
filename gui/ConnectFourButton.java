@@ -19,10 +19,11 @@ public class ConnectFourButton extends JButton {
 	}
 	
 	public void setPlayer(Player player) {
+		Board.disableComboBox();
 		if (_player == null) {
 			_player = player;
 			
-			setText(Board.currentTurn.getSymbol());
+			setText(Board._currentTurn.getSymbol());
 		}
 	}
 	

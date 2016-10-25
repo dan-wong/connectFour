@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class ButtonActionListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if (Board.gameOver) {
+		if (Board._gameOver) {
 			return;
 		}
 		
@@ -21,14 +21,14 @@ public class ButtonActionListener implements ActionListener {
 		
 		//Check if the buttons below it have been selected before
 		if (row < Board.ROWS) {
-			ConnectFourButton buttonBelow = Board.buttonBoard[row][button.getColumn()];
+			ConnectFourButton buttonBelow = Board._buttonBoard[row][button.getColumn()];
 			if (!buttonBelow.played()) {
 				return;
 			}
 		}
 		
-		button.setPlayer(Board.currentTurn);
-		Board.gridBoard.set(button.getRow(), button.getColumn(), Board.currentTurn);
+		button.setPlayer(Board._currentTurn);
+		Board._gridBoard.set(button.getRow(), button.getColumn(), Board._currentTurn);
 		
 		Board.toggleTurn();
 	}
