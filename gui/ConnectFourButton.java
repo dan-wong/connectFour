@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.JButton;
 
+import game.ConnectFour;
 import grid.Player;
 
 public class ConnectFourButton extends JButton {
@@ -23,7 +24,7 @@ public class ConnectFourButton extends JButton {
 		if (_player == null) {
 			_player = player;
 			
-			setText(Board._currentTurn.getSymbol());
+			setText(ConnectFour.getCurrentTurn().getSymbol());
 		}
 	}
 	
