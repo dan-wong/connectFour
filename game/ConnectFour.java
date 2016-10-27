@@ -13,6 +13,7 @@ public class ConnectFour {
 	private static Player _currentTurn = Player.CIRCLE;
 	private static boolean _gameOver = false;
 	
+	private static Statistics _stats = new Statistics();
 	private static GridBoard _gridBoard = new GridBoard();
 	
 	/**
@@ -24,7 +25,7 @@ public class ConnectFour {
 				try {
 					_window = new Board();
 					_window.getFrame().setVisible(true);
-					_window.getFrame().setSize(new Dimension(400,400));
+					_window.getFrame().setSize(new Dimension(450,450));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -48,13 +49,16 @@ public class ConnectFour {
 		}
 	}
 	
-	public static void gameOver() {
+	public static void gameOver(Player player) {
 		_gameOver = true;
+		_stats.addWin(player);
+		Board.comboBoxEnabled(true);
 	}
 	
-	public static void startGame() {
+	public static void resetGame() {
 		_gameOver = false;
 		_gridBoard = new GridBoard();
+		Board.comboBoxEnabled(true);
 	}
 	
 	public static boolean getGameStatus() {
@@ -64,7 +68,7 @@ public class ConnectFour {
 	public static void playTurn(ConnectFourButton button) {
 		if (ConnectFour.getGameStatus()) {
 			return;
-		}
+		} 
 		
 		//Check if the button has already been played
 		if (button.played()) {
@@ -80,6 +84,10 @@ public class ConnectFour {
 				return;
 			}
 		}
+		
+		//Ensure the combo box is disabled if game is in progress
+		//And only if a valid button has been pressed i.e. game not started, incorrect row clicked
+		Board.comboBoxEnabled(false);
 		
 		button.setPlayer(ConnectFour.getCurrentTurn());
 		_gridBoard.set(button.getRow(), button.getColumn(), ConnectFour.getCurrentTurn());

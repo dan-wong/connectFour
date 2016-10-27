@@ -11,11 +11,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import game.ConnectFour;
+import game.Statistics;
+import game.StatisticsListener;
 import grid.Player;
+import java.awt.Font;
 
-public class Board {
+public class Board implements StatisticsListener {
 	public static final int ROWS = 8; 
 	public static final int COLUMNS = 8;
 	private static final String[] _playerNames = { "Circle", "Cross" };
@@ -25,12 +29,19 @@ public class Board {
 	private static JFrame _frame;
 	private JPanel _buttonGrid = new JPanel();
 	private static JComboBox<String> _comboBox;
+	private JLabel _crossStats;
+	private JLabel _circleStats;
+	
+	private static Statistics _stats = new Statistics();
 
 	/**
 	 * Create the application.
 	 */
 	public Board() {
 		initialize();
+		
+		//Request to be notified of change in statistics
+		_stats.addListener(this);
 	}
 	
 	public JFrame getFrame() {
@@ -40,6 +51,7 @@ public class Board {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initialize() {
 		_frame = new JFrame();
 		_frame.setBounds(100, 100, 450, 300);
@@ -64,10 +76,36 @@ public class Board {
 		_frame.getContentPane().add(_buttonGrid, BorderLayout.CENTER);
 		
 		JPanel controlButtons = new JPanel();
+		_frame.getContentPane().add(controlButtons, BorderLayout.NORTH);
+		controlButtons.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
+		JButton resetBtn = new JButton("Reset");
+		resetBtn.setFocusable(false);
+		resetBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				for (int i=0; i<ROWS; i++) {
+					for (int j=0; j<COLUMNS; j++) {
+						ConnectFourButton newButton = _buttonBoard[i][j];
+						newButton.reset();
+					}
+				}
+				
+				ConnectFour.resetGame();
+			}
+			
+		});
+		controlButtons.setLayout(new BorderLayout(0, 0));
+		
+		JPanel playerSelectorPane = new JPanel();
+		controlButtons.add(playerSelectorPane, BorderLayout.WEST);
 		
 		JLabel lblStartingPlayer = new JLabel("Starting Player");
+		playerSelectorPane.add(lblStartingPlayer);
 		
-		_comboBox = new JComboBox<String>(_playerNames);
+		_comboBox = new JComboBox(_playerNames);
+		playerSelectorPane.add(_comboBox);
 		_comboBox.addActionListener(new ActionListener() {
 			
 			@Override
@@ -83,41 +121,42 @@ public class Board {
 			}
 			
 		});
+		controlButtons.add(resetBtn, BorderLayout.EAST);
 		
-		JButton resetBtn = new JButton("Reset");
-		resetBtn.setFocusable(false);
-		resetBtn.addActionListener(new ActionListener() {
+		JPanel statPanel = new JPanel();
+		statPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
+		statPanel.setLayout(new BorderLayout());
+		_crossStats = new JLabel("Cross: 0 Wins");
+		_circleStats = new JLabel("Circle: 0 Wins");
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				for (int i=0; i<ROWS; i++) {
-					for (int j=0; j<COLUMNS; j++) {
-						ConnectFourButton newButton = _buttonBoard[i][j];
-						newButton.reset();
-					}
-				}
-				
-				ConnectFour.startGame();
-			}
-			
-		});
+		statPanel.add(_crossStats, BorderLayout.WEST);
+		statPanel.add(_circleStats, BorderLayout.EAST);
 		
-		controlButtons.add(lblStartingPlayer);
-		controlButtons.add(_comboBox);
-		controlButtons.add(resetBtn);
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		bottomPanel.setLayout(new BorderLayout());
 		
-		_frame.getContentPane().add(controlButtons, BorderLayout.SOUTH);
+		JLabel label = new JLabel("Win Statistics");
+		label.setFont(new Font("Tahoma", Font.BOLD, 13));
+		bottomPanel.add(label);
+		bottomPanel.add(statPanel, BorderLayout.SOUTH);
+		
+		_frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 	}
 	
 	public static void setWin(Player player) {
 		JOptionPane.showMessageDialog(_frame, player.toString() + " Wins!", "Winner!", JOptionPane.INFORMATION_MESSAGE);
 		_comboBox.setEnabled(true);
-		ConnectFour.gameOver();
+		ConnectFour.gameOver(player);
 	}
 	
-	public static void disableComboBox() {
-		if (_comboBox.isEnabled()) {
-			_comboBox.setEnabled(false);
-		}
+	public static void comboBoxEnabled(boolean value) {
+		_comboBox.setEnabled(value);
+	}
+
+	@Override
+	public void fireUpdates() {
+		_crossStats.setText("Cross: " + _stats.getCrossWin() + " Wins");
+		_circleStats.setText("Circle: " + _stats.getCircleWin() + " Wins");
 	}
 }

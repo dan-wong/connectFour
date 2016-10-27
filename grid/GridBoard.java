@@ -38,12 +38,9 @@ public class GridBoard {
 		start = start < 0 ? 0 : start; // Ensure it is not less than zero
 
 		int end = currButton.getColumn() + 4;
-		end = end >= Board.COLUMNS ? Board.COLUMNS - 1 : end; // Ensure it is
-																// not greater
-																// than the
-																// number of
-																// columns
-
+		//Ensure it is not greater than the number of columns
+		end = end >= Board.COLUMNS ? Board.COLUMNS - 1 : end;
+		
 		// Check if the square to the left is played and is of the same type, if it
 		// isn't start search from the current grid
 		if (currButton.getColumn() != 0) {
@@ -93,11 +90,8 @@ public class GridBoard {
 		start = start < 0 ? 0 : start; // Ensure it is not less than zero
 
 		int end = currButton.getRow() + 4;
-		end = end >= Board.COLUMNS ? Board.COLUMNS - 1 : end; // Ensure it is
-																// not greater
-																// than the
-																// number of
-																// columns
+		// Ensure it is not greater than the number of columns
+		end = end >= Board.COLUMNS ? Board.COLUMNS - 1 : end; 
 
 		// If the current row is three from the bottom, automatically return
 		// false
